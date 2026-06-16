@@ -1,0 +1,130 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-deep: var(--deep);
+  --color-base: var(--base);
+  --color-gold: var(--gold);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.5rem;
+  /* Brand */
+  --base: oklch(0.985 0.005 80);        /* warm cream */
+  --deep: oklch(0.18 0.01 270);          /* near-black charcoal */
+  --gold: oklch(0.72 0.115 65);          /* accent gold/copper */
+
+  --background: var(--base);
+  --foreground: var(--deep);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--deep);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--deep);
+  --primary: var(--deep);
+  --primary-foreground: var(--base);
+  --secondary: oklch(0.94 0.008 80);
+  --secondary-foreground: var(--deep);
+  --muted: oklch(0.95 0.006 80);
+  --muted-foreground: oklch(0.5 0.012 80);
+  --accent: var(--gold);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.9 0.008 80);
+  --input: oklch(0.92 0.008 80);
+  --ring: var(--gold);
+
+  --sidebar: var(--base);
+  --sidebar-foreground: var(--deep);
+  --sidebar-primary: var(--deep);
+  --sidebar-primary-foreground: var(--base);
+  --sidebar-accent: oklch(0.95 0.006 80);
+  --sidebar-accent-foreground: var(--deep);
+  --sidebar-border: oklch(0.9 0.008 80);
+  --sidebar-ring: var(--gold);
+}
+
+.dark {
+  --background: oklch(0.16 0.01 270);
+  --foreground: var(--base);
+  --card: oklch(0.2 0.01 270);
+  --card-foreground: var(--base);
+  --popover: oklch(0.2 0.01 270);
+  --popover-foreground: var(--base);
+  --primary: var(--base);
+  --primary-foreground: var(--deep);
+  --secondary: oklch(0.24 0.01 270);
+  --secondary-foreground: var(--base);
+  --muted: oklch(0.24 0.01 270);
+  --muted-foreground: oklch(0.7 0.01 270);
+  --accent: var(--gold);
+  --accent-foreground: oklch(1 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: var(--gold);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.015em; }
+}
+
+@layer utilities {
+  .font-display { font-family: var(--font-display); }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; }

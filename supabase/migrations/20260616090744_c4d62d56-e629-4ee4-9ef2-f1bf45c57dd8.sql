@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "admin read all tours" ON public.tour_packages;
