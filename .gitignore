@@ -16,6 +16,9 @@ dist-ssr
 .nitro
 *.local
 
+# Nested duplicate project (should not exist)
+wild-pakistan-40188a38-main/
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
