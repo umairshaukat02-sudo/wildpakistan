@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-DVpe7PXp.js";var t=e(),n=()=>(0,t.jsx)(`div`,{className:`pt-40 text-center`,children:(0,t.jsx)(`p`,{children:`Not found`})});export{n as notFoundComponent};

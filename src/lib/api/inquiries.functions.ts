@@ -3,6 +3,23 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { computePricing } from "@/lib/pricing";
 
+// Helper: get a Supabase client for server-side operations.
+// Prefers admin client (bypasses RLS) but falls back to public client
+// when SUPABASE_SERVICE_ROLE_KEY is not set.
+async function getServerClient() {
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.SUPABASE_URL) {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    return supabaseAdmin;
+  }
+  const { createClient } = await import("@supabase/supabase-js");
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) {
+    throw new Error("Supabase not configured. Set environment variables in Vercel.");
+  }
+  return createClient(url, key);
+}
+
 const InquiryInput = z.object({
   customer_name: z.string().trim().min(1).max(200),
   customer_email: z.string().trim().email().max(255),
@@ -51,8 +68,8 @@ export const submitInquiry = createServerFn({ method: "POST" })
       meals: data.meals,
       activities: data.activities,
     });
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await supabaseAdmin
+    const sb = await getServerClient();
+    const { data: row, error } = await sb
       .from("inquiries")
       .insert({
         ...data,

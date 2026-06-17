@@ -2,38 +2,71 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-// ---------- Public reads (use admin client for stable public reads) ----------
+// Helper: get a Supabase client for server-side operations.
+// Prefers admin client (bypasses RLS) but falls back to public client
+// when SUPABASE_SERVICE_ROLE_KEY is not set (e.g. on first Vercel deploy).
+async function getServerClient() {
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.SUPABASE_URL) {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    return supabaseAdmin;
+  }
+  const { createClient } = await import("@supabase/supabase-js");
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) {
+    console.error("[Supabase] Missing SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY");
+    throw new Error("Supabase not configured. Set environment variables in Vercel.");
+  }
+  return createClient(url, key);
+}
+
+// ---------- Public reads ----------
 
 export const listSiteImages = createServerFn({ method: "GET" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin.from("site_images").select("key,url,alt,caption").order("key");
-  if (error) throw new Error(error.message);
-  return data ?? [];
+  try {
+    const sb = await getServerClient();
+    const { data, error } = await sb.from("site_images").select("key,url,alt,caption").order("key");
+    if (error) { console.error("[listSiteImages]", error.message); return []; }
+    return data ?? [];
+  } catch (e) {
+    console.error("[listSiteImages] failed:", e);
+    return [];
+  }
 });
 
 export const listPublishedTours = createServerFn({ method: "GET" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin
-    .from("tour_packages")
-    .select("*")
-    .eq("published", true)
-    .order("sort_order", { ascending: true });
-  if (error) throw new Error(error.message);
-  return data ?? [];
+  try {
+    const sb = await getServerClient();
+    const { data, error } = await sb
+      .from("tour_packages")
+      .select("*")
+      .eq("published", true)
+      .order("sort_order", { ascending: true });
+    if (error) { console.error("[listPublishedTours]", error.message); return []; }
+    return data ?? [];
+  } catch (e) {
+    console.error("[listPublishedTours] failed:", e);
+    return [];
+  }
 });
 
 export const getTourBySlug = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => z.object({ slug: z.string().min(1).max(120) }).parse(d))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await supabaseAdmin
-      .from("tour_packages")
-      .select("*")
-      .eq("slug", data.slug)
-      .eq("published", true)
-      .maybeSingle();
-    if (error) throw new Error(error.message);
-    return row;
+    try {
+      const sb = await getServerClient();
+      const { data: row, error } = await sb
+        .from("tour_packages")
+        .select("*")
+        .eq("slug", data.slug)
+        .eq("published", true)
+        .maybeSingle();
+      if (error) { console.error("[getTourBySlug]", error.message); return null; }
+      return row;
+    } catch (e) {
+      console.error("[getTourBySlug] failed:", e);
+      return null;
+    }
   });
 
 // ---------- Contact form (public submission) ----------
@@ -48,8 +81,8 @@ const ContactInput = z.object({
 export const submitContact = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => ContactInput.parse(d))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await supabaseAdmin
+    const sb = await getServerClient();
+    const { data: row, error } = await sb
       .from("contact_messages")
       .insert({ name: data.name, email: data.email, subject: data.subject ?? null, message: data.message })
       .select("id")

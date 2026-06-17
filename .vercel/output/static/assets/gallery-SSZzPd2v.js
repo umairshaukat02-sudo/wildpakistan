@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-DVpe7PXp.js";var t=e(),n=({error:e})=>(0,t.jsx)(`div`,{className:`pt-40 text-center`,children:(0,t.jsx)(`p`,{children:e.message})});export{n as errorComponent};
