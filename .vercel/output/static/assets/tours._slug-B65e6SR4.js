@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-DVpe7PXp.js";import{t}from"./link-BQx_dLV_.js";var n=e(),r=()=>(0,n.jsxs)(`div`,{className:`pt-40 pb-32 text-center`,children:[(0,n.jsx)(`h1`,{className:`font-display text-4xl`,children:`Tour not found`}),(0,n.jsx)(t,{to:`/tours`,className:`mt-6 inline-block text-accent underline`,children:`Back to expeditions`})]});export{r as notFoundComponent};

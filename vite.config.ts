@@ -13,4 +13,9 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Force-enable Nitro with the Vercel preset so the build produces
+  // .vercel/output/ (serverless functions + static assets).
+  // Without this, the lovable config skips Nitro outside its sandbox.
+  nitro: { preset: "vercel" },
 });
+

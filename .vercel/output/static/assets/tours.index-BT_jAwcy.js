@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-DVpe7PXp.js";var t=e(),n=({error:e})=>(0,t.jsxs)(`div`,{className:`pt-40 text-center`,children:[(0,t.jsx)(`h1`,{className:`font-display text-3xl`,children:`Couldn't load tours`}),(0,t.jsx)(`p`,{className:`text-muted-foreground mt-2`,children:e.message})]});export{n as errorComponent};

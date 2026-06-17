@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-DVpe7PXp.js";import{G as t}from"./index-DyrPGuue.js";var n=e(),r=()=>(0,n.jsx)(t,{});export{r as component};
